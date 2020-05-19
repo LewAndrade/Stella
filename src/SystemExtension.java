@@ -5,18 +5,6 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class SystemExtension {
-    public static void print(Object arg) {
-        System.out.println(arg);
-    }
-
-    public static void print() {
-        System.out.println();
-    }
-
-    public static void printSl(Object arg) {
-        System.out.print(arg);
-    }
-
     public static void stop(){
         System.exit(0);
     }
