@@ -1,7 +1,13 @@
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Device {
     String name;
     double power;
     double hoursPerDay;
+    double energyConsumption = (power * hoursPerDay) / 1000;
+
+    public Device(){
+    }
 
     public Device(String name, double power, double hoursPerDay) {
         this.name = name;
@@ -34,6 +40,6 @@ public class Device {
     }
 
     public double getEnergyConsumption() {
-        return (power * hoursPerDay) / 1000;
+        return energyConsumption;
     }
 }
