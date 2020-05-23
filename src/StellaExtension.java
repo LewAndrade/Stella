@@ -33,6 +33,50 @@ public class StellaExtension {
         }
     }
 
+    public static boolean isValidNameFormat(String string) {
+        return string.length() <= 32 && (!string.isBlank() || !string.isEmpty());
+    }
+
+    public static boolean isValidPowerFormat(String string) {
+        return isNumeric(string);
+    }
+
+    public static boolean isValidHourFormat(String string) {
+        if (isNumeric(string)) {
+            var value = Double.parseDouble(string);
+            return !(value > 24) && !(value < 0);
+        }
+        return false;
+    }
+
+    public static boolean isValidAgeFormat(String string) {
+        if (isNumeric(string)) {
+            if (isInteger(string)) {
+                var value = Double.parseDouble(string);
+                return !(value > 120) && !(value < 0);
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public static TimeFormat getTimeFormat(String string) {
+        var hourFormats = Arrays.asList("horas", "hora", "h", "hr", "hrs", "em horas");
+        var minuteFormats = Arrays.asList("minutos", "minuto", "min", "m", "em minutos");
+        if (hourFormats.contains(string)) return TimeFormat.HOUR;
+        else if (minuteFormats.contains(string)) return TimeFormat.MINUTE;
+        else return TimeFormat.NULL;
+    }
+
+    public static boolean isValidMinuteFormat(String string) {
+        if (isNumeric(string)) {
+            double value = Double.parseDouble(string);
+            return !(value > 1440) && !(value < 0);
+        }
+        return false;
+    }
+
     public static class Ui {
         private static final Scanner scanner = new Scanner(System.in);
 
@@ -109,4 +153,10 @@ enum Options {
     public static Options fromInt(final int id) {
         return reverseLookup.getOrDefault(id, null);
     }
+}
+
+enum TimeFormat {
+    HOUR,
+    MINUTE,
+    NULL
 }
