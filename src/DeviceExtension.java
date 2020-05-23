@@ -1,6 +1,5 @@
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -37,7 +36,7 @@ public class DeviceExtension {
     }
 
     public static Double setDeviceDailyUsage() {
-        System.out.print("Ufa... Quase la, agora só falta me dizer quanto tempo o aparelho é usado,\n" +
+        System.out.print("Okay então me diz, quanto tempo o aparelho é usado,\n" +
                 "Você quer me dizer em horas ou em minutos? : ");
 
         var formatChoice = StellaExtension.getTimeFormat(scanner.nextLine().strip().toLowerCase());
@@ -130,5 +129,79 @@ public class DeviceExtension {
         Stream.generate(() -> "═").limit(tableWidth - (menuSize)).forEach(System.out::print);
         System.out.println("╝");
         StellaExtension.Ui.headerLine();
+    }
+
+    public static int selectDevice(ArrayList<Device> devices) {
+        System.out.print("Sua escolha: ");
+        var choiceBuffer = scanner.nextLine().strip();
+        do {
+            if (StellaExtension.isInteger(choiceBuffer)) {
+                var choice = Integer.parseInt(choiceBuffer);
+                if (choice >= 0 && choice <= devices.size()) {
+                    return choice;
+                }
+            }
+            StellaExtension.Ui.Error.invalidNumberFormatError();
+            choiceBuffer = scanner.nextLine().strip();
+        } while (true);
+    }
+
+    public static int selectItem() {
+        System.out.print("Sua escolha: ");
+        var choiceBuffer = scanner.nextLine().strip();
+        do {
+            if (StellaExtension.isInteger(choiceBuffer)) {
+                var choice = Integer.parseInt(choiceBuffer);
+                if (choice >= 0 && choice <= 3) {
+                    return choice;
+                }
+            }
+            StellaExtension.Ui.Error.invalidNumberFormatError();
+            choiceBuffer = scanner.nextLine().strip();
+        } while (true);
+    }
+
+    public static boolean editDevice(User user) {
+        var index = selectDevice(user.getDevices());
+        if (index != 0) {
+            var device = user.getDevices().get(index - 1);
+            System.out.println(String.format("Editando: %s, o que deseja mudar?\n" +
+                    "[1] Nome\n" +
+                    "[2] Potência\n" +
+                    "[3] Tempo de uso\n" +
+                    "[0] Voltar", device.getName()));
+            do {
+                var item = selectItem();
+                switch (item) {
+                    case 1:
+                        device.setName(setDeviceName());
+                        return true;
+                    case 2:
+                        device.setPower(setDevicePower());
+                        return true;
+                    case 3:
+                        device.setDailyUsage(setDeviceDailyUsage());
+                        return true;
+                    case 0:
+                        return true;
+                }
+            } while (true);
+        }
+        return false;
+    }
+
+    public static boolean deleteDevice(User user) {
+        var index = selectDevice(user.getDevices());
+        if (index != 0) {
+            var device = user.getDevices().get(index - 1);
+            System.out.print(String.format("Tem certeza que deseja deletar: %s\n" +
+                    "[sim | nao]: ", device.getName()));
+
+            if (StellaExtension.continueList.contains(scanner.nextLine().strip())) {
+                user.getDevices().remove(index - 1);
+                return true;
+            }
+        }
+        return false;
     }
 }
