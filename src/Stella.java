@@ -28,9 +28,22 @@ public class Stella {
                     UserExtension.writeUserInFile(user);
                     break;
                 case EDIT_DEVICE:
-                    DeviceExtension.listDevices(user.getDevices());
+                    var repeatEdit = true;
+                    while (repeatEdit) {
+                        DeviceExtension.listDevices(user.getDevices());
+                        var editedDevice = DeviceExtension.editDevice(user);
+                        UserExtension.writeUserInFile(user);
+                        repeatEdit = editedDevice && StellaExtension.Ui.setEditRepeat();
+                    }
                     break;
                 case DELETE_DEVICE:
+                    var repeatDelete = true;
+                    while(repeatDelete) {
+                        DeviceExtension.listDevices(user.getDevices());
+                        var deletedDevice = DeviceExtension.deleteDevice(user);
+                        UserExtension.writeUserInFile(user);
+                        repeatDelete = deletedDevice && StellaExtension.Ui.setDeleteRepeat();
+                    }
                     break;
                 case CONSUMPTION_GUIDE:
                     break;

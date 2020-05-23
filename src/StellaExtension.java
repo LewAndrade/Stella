@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StellaExtension {
+    public static List<String> continueList = Arrays.asList("sim", "si", "s", "yes", "ye", "y", "zim", "yup", "ja",
+            "uhum", "ss", "yip", "yabadabadoo", "okiedokie", "yeet", "okay", "okie", "ok");
+
     public static void stop() {
         System.exit(0);
     }
@@ -17,7 +20,7 @@ public class StellaExtension {
         return br.readLine() == null && file.length() == 0;
     }
 
-    private static boolean isInteger(String string) {
+    public static boolean isInteger(String string) {
         Scanner sc = new Scanner(string.trim());
         if (!sc.hasNextInt(10)) return false;
         sc.nextInt(10);
@@ -125,6 +128,18 @@ public class StellaExtension {
                     "Até mais :)");
         }
 
+        public static boolean setEditRepeat() {
+            System.out.print("Deseja editar outra coisa?\n" +
+                    "[sim | nao]: ");
+            return continueList.contains(scanner.nextLine().strip().toLowerCase());
+        }
+
+        public static boolean setDeleteRepeat() {
+            System.out.print("Deseja deletar outra coisa?\n" +
+                    "[sim | nao]: ");
+            return continueList.contains(scanner.nextLine().strip().toLowerCase());
+        }
+
         public static class Error {
             public static void invalidHourFormatError() {
                 System.out.print("Desculpa, mas parece que você não escreveu um número válido, tenta de novo vai... \n" +
@@ -139,7 +154,8 @@ public class StellaExtension {
             }
 
             public static void invalidNumberFormatError() {
-                System.out.println("Desculpa, mas parece que você não escreveu um número válido, tenta de novo vai...");
+                System.out.print("Desculpa, mas parece que você não escreveu um número válido, tenta de novo vai...\n" +
+                        "Sua escolha: ");
             }
 
             public static void invalidNameFormatError() {
