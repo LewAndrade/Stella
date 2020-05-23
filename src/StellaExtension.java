@@ -121,6 +121,44 @@ public class StellaExtension {
             System.out.println("Saindo.....\n" +
                     "Até mais :)");
         }
+
+        public static class Error {
+            public static void invalidHourFormatError() {
+                System.out.print("Desculpa, mas parece que você não escreveu um número válido, tenta de novo vai... \n" +
+                        "Lembra que só tem 24 horas em um dia, não pode passar disso, e nem ser menor que 0 ok? \n" +
+                        "--- Horas em uso (h) --- : ");
+            }
+
+            public static void invalidMinuteFormatError() {
+                System.out.print("Desculpa, mas parece que você não escreveu um número válido, tenta de novo vai... \n" +
+                        "Lembra que só tem 1440 minutos em um dia, não pode passar disso, e nem ser menor que 0 ok? \n" +
+                        "--- Minutos em uso (h) --- : ");
+            }
+
+            public static void invalidNumberFormatError() {
+                System.out.println("Desculpa, mas parece que você não escreveu um número válido, tenta de novo vai...");
+            }
+
+            public static void invalidNameFormatError() {
+                System.out.print("Opa, eu acho que você não colocou um nome válido \n" +
+                        "Tenta de novo por favor? \n" +
+                        "--- Nome --- : ");
+            }
+
+            public static void invalidPowerFormatError() {
+                System.out.print("Desculpa, mas você não escreveu um numero válido pra potencia... \n" +
+                        "--- Potência (W) --- : ");
+            }
+
+            public static void invalidTimeFormatError() {
+                System.out.print("Desculpa não entendi, você quis dizer horas ou minutos? : ");
+            }
+
+            public static void invalidAgeFormatError() {
+                System.out.print("Por favor coloque um número valido para idade: ");
+
+            }
+        }
     }
 }
 
