@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 class UserExtension {
 
-    public static File userData = new File(".\\data\\User.json");
+    public static File userData = new File(System.getProperty("user.home") + "\\Stella\\User.json");
     private static final Scanner scanner = new Scanner(System.in);
     private static final ObjectMapper mapper = new ObjectMapper();
 
