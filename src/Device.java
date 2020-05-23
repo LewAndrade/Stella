@@ -2,7 +2,7 @@ public class Device {
     private String name;
     private double power;
     private double dailyUsage;
-    private double energyConsumption = (power * dailyUsage) / 1000;
+    private double energyConsumption;
 
     public Device() {
     }
@@ -28,6 +28,7 @@ public class Device {
 
     public void setPower(double power) {
         this.power = power;
+        this.energyConsumption = (power * dailyUsage) / 1000;
     }
 
     public double getDailyUsage() {
@@ -36,6 +37,7 @@ public class Device {
 
     public void setDailyUsage(double dailyUsage) {
         this.dailyUsage = dailyUsage;
+        this.energyConsumption = (power * dailyUsage) / 1000;
     }
 
     public double getEnergyConsumption() {
