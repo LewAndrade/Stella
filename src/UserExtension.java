@@ -11,22 +11,31 @@ class UserExtension {
     private static final Scanner scanner = new Scanner(System.in);
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    public static void setUserName(User user) {
+        user.setName(scanner.nextLine().strip());
+    }
+
+    private static void setUserAge(User user) {
+        String age = scanner.nextLine().strip();
+        do {
+            if (StellaExtension.isValidAgeFormat(age)) {
+                user.setAge(Integer.parseInt(age));
+                return;
+            }
+            StellaExtension.Ui.Error.invalidAgeFormatError();
+            age = scanner.nextLine().strip();
+        } while (!StellaExtension.isValidAgeFormat(age));
+    }
+
     public static User createNewUser() throws IOException {
         User user = new User();
-        Stream.generate(() -> "*").limit(70).forEach(System.out::print);
-        System.out.println();
+        StellaExtension.Ui.headerLine();
         System.out.println("Oi, eu sou a Stella, estou aqui para te ajudar a gastar menos energia, \n" +
                 "assim poupando seu bolso e ajudando a salvar o planeta :)");
-        System.out.print("Pra começar eu gostaria de saber o seu nome: ");
-        user.setName(scanner.nextLine().strip());
+        System.out.print("Pra começar eu quero de saber o seu nome: ");
+        setUserName(user);
         System.out.print("E agora a sua idade: ");
-        String age = scanner.nextLine().strip();
-        while (!StellaExtension.isInteger(age, 10)) {
-            System.out.print("Por favor coloque um número valido para idade: ");
-            age = scanner.nextLine().strip().toLowerCase();
-        }
-        user.setAge(Integer.parseInt(age));
-        user.setState(1);
+        setUserAge(user);
         System.out.println("Tudo certo, agora iniciando...");
         mapper.writeValue(userData, user);
         return user;
