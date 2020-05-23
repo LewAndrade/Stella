@@ -17,14 +17,14 @@ public class StellaExtension {
         return br.readLine() == null && file.length() == 0;
     }
 
-    public static boolean isInteger(String string, int radix) {
+    private static boolean isInteger(String string) {
         Scanner sc = new Scanner(string.trim());
-        if (!sc.hasNextInt(radix)) return false;
-        sc.nextInt(radix);
+        if (!sc.hasNextInt(10)) return false;
+        sc.nextInt(10);
         return !sc.hasNext();
     }
 
-    public static boolean isNumeric(String string) {
+    private static boolean isNumeric(String string) {
         try {
             Double.parseDouble(string);
             return true;
@@ -80,34 +80,37 @@ public class StellaExtension {
     public static class Ui {
         private static final Scanner scanner = new Scanner(System.in);
 
-        public static void headerLine(int size) {
-            Stream.generate(() -> "*").limit(size).forEach(System.out::print);
+        public static void headerLine() {
+            Stream.generate(() -> "*").limit(138).forEach(System.out::print);
             System.out.println();
         }
 
         public static void greetings(String username) {
-            StellaExtension.Ui.headerLine(70);
-            System.out.println("Oi " + username + ", O que deseja fazer?");
-            StellaExtension.Ui.headerLine(70);
+            StellaExtension.Ui.headerLine();
+            System.out.println("Oi " + username + "!!!");
+
         }
 
-        public static Options optionsMenu() {
-            System.out.print("[1] Adicionar um aparelho\n" +
-                    "[2] Deletar um aparelho\n" +
-                    "[3] Consultar consumo de energia\n" +
+        public static Option optionsMenu() {
+            StellaExtension.Ui.headerLine();
+            System.out.println("--- O que deseja fazer? \n" +
+                    "[1] Adicionar um aparelho\n" +
+                    "[2] Editar um aparelho\n" +
+                    "[3] Deletar um aparelho\n" +
                     "[4] Descobrir como gastar menos\n" +
-                    "[5] Ver detalhes completos sobre as seus aparelhos\n" +
+                    "[5] Consultar consumo de energia\n" +
                     "[6] Alterar dados pessoais\n" +
-                    "[0] Sair\n" +
-                    "Sua escolha: ");
+                    "[0] Sair");
+            StellaExtension.Ui.headerLine();
+            System.out.print("Sua escolha: ");
             var choiceBuffer = scanner.nextLine().strip().toLowerCase();
 
             do {
-                if (isInteger(choiceBuffer, 10)) {
+                if (isInteger(choiceBuffer)) {
                     int choice = Integer.parseInt(choiceBuffer);
-                    if (Options.indexValues().contains(Integer.parseInt(choiceBuffer))) {
-                        StellaExtension.Ui.headerLine(70);
-                        return Options.fromInt(choice);
+                    if (Option.indexValues().contains(Integer.parseInt(choiceBuffer))) {
+                        StellaExtension.Ui.headerLine();
+                        return Option.fromInt(choice);
                     }
                 }
                 System.out.print("Desculpa, mas acho que você não colocou uma das opções acima, tenta de novo? \n" +
@@ -162,18 +165,18 @@ public class StellaExtension {
     }
 }
 
-enum Options {
-    ADD(1),
-    CHECK(2),
-    DELETE(3),
-    GUIDE(4),
-    DETAILS(5),
-    EDIT(6),
+enum Option {
+    ADD_DEVICE(1),
+    EDIT_DEVICE(2),
+    DELETE_DEVICE(3),
+    CONSUMPTION_GUIDE(4),
+    CHECK_CONSUMPTION(5),
+    EDIT_PROFILE(6),
     EXIT(0);
 
     int index;
 
-    Options(int index) {
+    Option(int index) {
         this.index = index;
     }
 
@@ -182,13 +185,13 @@ enum Options {
     }
 
     public static ArrayList<Integer> indexValues() {
-        return Options.reverseLookup.values().stream().map(c -> c.index).collect(Collectors.toCollection(ArrayList::new));
+        return Option.reverseLookup.values().stream().map(c -> c.index).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public static final Map<Integer, Options> reverseLookup =
-            Arrays.stream(Options.values()).collect(Collectors.toMap(Options::getIndex, Function.identity()));
+    public static final Map<Integer, Option> reverseLookup =
+            Arrays.stream(Option.values()).collect(Collectors.toMap(Option::getIndex, Function.identity()));
 
-    public static Options fromInt(final int id) {
+    public static Option fromInt(final int id) {
         return reverseLookup.getOrDefault(id, null);
     }
 }

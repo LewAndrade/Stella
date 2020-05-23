@@ -74,6 +74,7 @@ public class DeviceExtension {
     }
 
     public static Device createNewDevice() {
+        System.out.println("Okay :) Vamos adicionar um aparelho então.");
         return new Device(setDeviceName(), setDevicePower(), setDeviceDailyUsage());
     }
 

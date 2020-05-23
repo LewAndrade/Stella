@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.Scanner;
 
 public class Stella {
 
@@ -12,39 +11,36 @@ public class Stella {
             } else {
                 user = UserExtension.readUserFromFile();
             }
-            mainMenu(user);
         } else {
-            if (UserExtension.createUserDataFile()) {
-                user = UserExtension.createNewUser();
-                mainMenu(user);
-            } else {
-                StellaExtension.stop();
-            }
+            UserExtension.createUserDataFile();
+            user = UserExtension.createNewUser();
         }
+        mainMenu(user);
     }
 
     public static void mainMenu(User user) throws IOException {
         StellaExtension.Ui.greetings(user.getName());
         var choice = StellaExtension.Ui.optionsMenu();
-        while (choice != Options.EXIT) {
+        while (choice != Option.EXIT) {
             switch (choice) {
-                case ADD:
+                case ADD_DEVICE:
                     user.addDevice(DeviceExtension.createNewDevice());
+                    UserExtension.writeUserInFile(user);
                     break;
-                case DELETE:
+                case EDIT_DEVICE:
+                    DeviceExtension.listDevices(user.getDevices());
                     break;
-                case CHECK:
+                case DELETE_DEVICE:
                     break;
-                case GUIDE:
+                case CONSUMPTION_GUIDE:
                     break;
-                case DETAILS:
+                case CHECK_CONSUMPTION:
                     break;
-                case EDIT:
+                case EDIT_PROFILE:
                     break;
             }
             choice = StellaExtension.Ui.optionsMenu();
         }
         StellaExtension.Ui.farewell();
-        UserExtension.writeUserInFile(user);
     }
 }
