@@ -1,18 +1,17 @@
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class Device {
-    String name;
-    double power;
-    double hoursPerDay;
-    double energyConsumption = (power * hoursPerDay) / 1000;
+    private String name;
+    private double power;
+    private double dailyUsage;
+    private double energyConsumption = (power * dailyUsage) / 1000;
 
-    public Device(){
+    public Device() {
     }
 
-    public Device(String name, double power, double hoursPerDay) {
+    public Device(String name, double power, double dailyUsage) {
         this.name = name;
         this.power = power;
-        this.hoursPerDay = hoursPerDay;
+        this.dailyUsage = dailyUsage;
+        this.energyConsumption = (power * dailyUsage) / 1000;
     }
 
     public String getName() {
@@ -31,12 +30,12 @@ public class Device {
         this.power = power;
     }
 
-    public double getHoursPerDay() {
-        return hoursPerDay;
+    public double getDailyUsage() {
+        return dailyUsage;
     }
 
-    public void setHoursPerDay(double hoursPerDay) {
-        this.hoursPerDay = hoursPerDay;
+    public void setDailyUsage(double dailyUsage) {
+        this.dailyUsage = dailyUsage;
     }
 
     public double getEnergyConsumption() {
