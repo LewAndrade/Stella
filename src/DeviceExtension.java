@@ -1,4 +1,8 @@
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class DeviceExtension {
     private static final Scanner scanner = new Scanner(System.in);
@@ -71,5 +75,59 @@ public class DeviceExtension {
 
     public static Device createNewDevice() {
         return new Device(setDeviceName(), setDevicePower(), setDeviceDailyUsage());
+    }
+
+    public static void listDevices(ArrayList<Device> devices) {
+        int biggestName = 0;
+        int biggestPower = 0;
+        int biggestConsumption = 0;
+        for (Device device : devices) {
+            var nameLength = device.getName().length();
+            var powerLength = new DecimalFormat("#.##").format(device.getPower()).length();
+            var consumptionLength = String.valueOf((int) device.getEnergyConsumption()).length() + 3;
+            if (nameLength > biggestName) biggestName = nameLength;
+            if (powerLength > biggestPower) biggestPower = powerLength;
+            if (consumptionLength > biggestConsumption) biggestConsumption = consumptionLength;
+        }
+
+        System.out.println("--- Okay :) Aqui estão seus aparelhos:");
+        var outputList = new ArrayList<String>();
+
+        for (int i = 0; i < devices.size(); i++) {
+            var device = devices.get(i);
+            String usageTime;
+            var hours = (int) device.getDailyUsage();
+            var minutes = (int) ((device.getDailyUsage() - hours) * 60);
+
+            if (minutes == 0) if (hours > 1) usageTime = String.format("%s horas", hours);
+            else usageTime = hours == 1 ? String.format("%s hora", hours) : "";
+            else if (hours > 1) usageTime = String.format("%s horas e ", hours);
+            else usageTime = hours == 1 ? String.format("%s hora e ", hours) : "";
+            if (minutes > 1) usageTime += String.format("%s minutos", minutes);
+            else if (minutes == 1) usageTime += String.format("%s minuto", minutes);
+
+            outputList.add(String.format("[%" + String.valueOf(devices.size()).length() + "s] " +
+                            "║ Nome: %-" + biggestName + "s " +
+                            "║ Potência: %" + biggestPower + "s W " +
+                            "║ Tempo de uso: %-21s " +
+                            "║ Consumo de energia: %" + biggestConsumption + ".2f kWh ║",
+                    i + 1,
+                    device.getName(),
+                    new DecimalFormat("#.##").format(device.getPower()),
+                    usageTime,
+                    device.getEnergyConsumption()));
+        }
+        var menuSize = String.valueOf(devices.size()).length() + 4;
+        var tableWidth = outputList.get(0).length() - 1;
+
+        System.out.print(String.format("%" + (menuSize) + "s", "╔"));
+        Stream.generate(() -> "═").limit(tableWidth - (menuSize)).forEach(System.out::print);
+        System.out.println("╗");
+        outputList.forEach(System.out::println);
+        System.out.println(String.format("%-" + tableWidth + "s║", String.format("[%" + (menuSize - 4) + "s] ║ Voltar...", "0")));
+        System.out.print(String.format("%" + (menuSize) + "s", "╚"));
+        Stream.generate(() -> "═").limit(tableWidth - (menuSize)).forEach(System.out::print);
+        System.out.println("╝");
+        StellaExtension.Ui.headerLine();
     }
 }
