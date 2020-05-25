@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_14" default="true" project-jdk-name="openjdk-14" project-jdk-type="JavaSDK">
+  <component name="EntryPointsManager">
+    <pattern value="DeviceExtension" method="deleteDevice" />
+    <pattern value="Device" />
+    <pattern value="Device" method="Device" />
+    <pattern value="DeviceExtension" />
+    <pattern value="Stella" method="main" />
+    <pattern value="Stella" />
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="openjdk-14" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
