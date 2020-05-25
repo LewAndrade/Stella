@@ -22,7 +22,7 @@ public class StellaExtension {
     }
 
     public static boolean isValidNameFormat(String string) {
-        return string.length() <= 32 && string.length() > 0;
+        return string.length() <= 32 && !string.isEmpty();
     }
 
     public static boolean isPositiveDouble(String string) {
@@ -45,7 +45,7 @@ public class StellaExtension {
         if (isNumeric(string)) {
             if (isInteger(string)) {
                 double value = Double.parseDouble(string);
-                return !(value > 120) && !(value < 0);
+                return value > 0 && value < 120;
             } else {
                 return false;
             }

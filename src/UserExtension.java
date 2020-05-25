@@ -19,11 +19,12 @@ class UserExtension {
         User user = new User();
         System.out.println("Oi, eu sou a Stella, estou aqui para te ajudar a gastar menos energia, \n" +
                 "assim poupando seu bolso e ajudando a salvar o planeta :)");
+        setUserTariffs(user);
         setUserName(user);
         setUserAge(user);
-        resetUserTariffs(user);
         saveUserData(user);
-        System.out.println("Salvando...");
+        System.out.println("Salvando... \n" +
+                "Iniciando...\n");
         return user;
     }
 
@@ -195,25 +196,30 @@ class UserExtension {
         System.out.print(user.getName() == null ?
                 "Pra começar eu quero de saber o seu nome: " :
                 "\nQual vai ser o nome novo? : ");
-        user.setName(scanner.nextLine().trim());
-        saveUserData(user);
+        do {
+            String name = scanner.nextLine().trim();
+            if (StellaExtension.isValidNameFormat(name)) {
+                user.setName(name);
+                saveUserData(user);
+                return;
+            }
+            StellaExtension.Ui.Error.invalidNameFormatError();
+        } while (true);
     }
 
     private static void setUserAge(User user) {
-
         System.out.print(user.getAge() == 0
                 ? "E agora a sua idade: "
                 : "\nQual vai ser a idade nova? : ");
-        String age = scanner.nextLine().trim();
         do {
+            String age = scanner.nextLine().trim();
             if (StellaExtension.isValidAgeFormat(age)) {
                 user.setAge(Integer.parseInt(age));
                 saveUserData(user);
                 return;
             }
             StellaExtension.Ui.Error.invalidAgeFormatError();
-            age = scanner.nextLine().trim();
-        } while (!StellaExtension.isValidAgeFormat(age));
+        } while (true);
     }
 
     private static void resetUserTariffs(User user) {
@@ -222,6 +228,11 @@ class UserExtension {
             user.setDefaultTariffs();
             saveUserData(user);
         }
+    }
+
+    private static void setUserTariffs(User user) {
+        user.setDefaultTariffs();
+        saveUserData(user);
     }
 
     private static void deleteUserDevices(User user) {
