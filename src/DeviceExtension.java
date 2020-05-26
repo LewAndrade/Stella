@@ -7,7 +7,9 @@ public class DeviceExtension {
 
     public static void createNewDevice(User user) {
         System.out.println("\nOkay :) Vamos adicionar um aparelho então.");
-        user.addDevice(new Device(setDeviceName(), setDevicePower(), setDeviceDailyUsage()));
+        Device device = new Device(setDeviceName(), setDevicePower(), setDeviceDailyUsage());
+        user.addDevice(device);
+        System.out.println("\nProntinho, salvando os dados do aparelho: " + device.getName() + "...");
         UserExtension.saveUserData(user);
     }
 
@@ -57,6 +59,7 @@ public class DeviceExtension {
             if (StellaExtension.Ui.getConsent()) {
                 user.getDevices().remove(index - 1);
                 UserExtension.saveUserData(user);
+                System.out.println("\nAparelho removido...\n");
             }
         }
     }
@@ -65,13 +68,12 @@ public class DeviceExtension {
         System.out.print("\nQual vai ser o nome do aparelho? \n" +
                 "Dando um nome pro aparelho vai ficar fácil de saber o que é o que no final \n" +
                 "--- Nome --- : ");
-        String name = scanner.nextLine().trim();
         do {
+            String name = scanner.nextLine().trim();
             if (StellaExtension.isValidNameFormat(name)) {
                 return name;
             }
             StellaExtension.Ui.Error.invalidNameFormatError();
-            name = scanner.nextLine().trim();
         } while (true);
     }
 
@@ -80,13 +82,12 @@ public class DeviceExtension {
                 "A potencia é medida em watts (W), você pode achar ela na caixa ou no manual, \n" +
                 "mas se você não conseguir encontrar o google te uma ajudinha, tenho certeza ;)\n" +
                 "--- Potência (W) --- : ");
-        String power = scanner.nextLine().trim();
         do {
+            String power = scanner.nextLine().trim();
             if (StellaExtension.isPositiveDouble(power)) {
                 return Double.parseDouble(power);
             }
             StellaExtension.Ui.Error.invalidPowerFormatError();
-            power = scanner.nextLine().trim();
         } while (true);
     }
 
@@ -94,8 +95,8 @@ public class DeviceExtension {
         System.out.print("\nOkay então me diz, por quanto tempo o aparelho é usado,\n" +
                 "Você quer me dizer em horas ou em minutos? : ");
 
-        TimeFormat formatChoice = StellaExtension.getTimeFormat(scanner.nextLine().trim().toLowerCase());
         do {
+            TimeFormat formatChoice = StellaExtension.getTimeFormat(scanner.nextLine().trim().toLowerCase());
             switch (formatChoice) {
                 case HOUR:
                     System.out.print("Certo, e por quantas horas o aparelho é usado por dia? : ");
@@ -117,7 +118,6 @@ public class DeviceExtension {
                     } while (true);
                 case NULL:
                     StellaExtension.Ui.Error.invalidTimeFormatError();
-                    formatChoice = StellaExtension.getTimeFormat(scanner.nextLine().trim().toLowerCase());
                     break;
             }
         } while (true);
@@ -132,6 +132,7 @@ public class DeviceExtension {
         int biggestPower = 0;
         int biggestConsumption = 0;
         int biggestUsageTime = 0;
+
         for (Device device : devices) {
             int nameLength = device.getName().length();
             int powerLength = StellaExtension.Ui.getDoubleString(device.getPower()).length();
