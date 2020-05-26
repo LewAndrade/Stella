@@ -54,8 +54,8 @@ public class StellaExtension {
     }
 
     public static TimeFormat getTimeFormat(String string) {
-        List<String> hourFormats = Arrays.asList("horas", "hora", "h", "hr", "hrs", "em horas");
-        List<String> minuteFormats = Arrays.asList("minutos", "minuto", "min", "m", "em minutos");
+        List<String> hourFormats = Arrays.asList("horas", "hora", "h", "hr", "hrs", "em horas", "em hora");
+        List<String> minuteFormats = Arrays.asList("minutos", "minuto", "min", "m", "em minutos", "em minuto");
         if (hourFormats.contains(string)) return TimeFormat.HOUR;
         else if (minuteFormats.contains(string)) return TimeFormat.MINUTE;
         else return TimeFormat.NULL;
@@ -76,7 +76,7 @@ public class StellaExtension {
         private static final Scanner scanner = new Scanner(System.in);
 
         public static void logo() {
-            System.out.println(
+            System.out.println("\n" +
                     "_____/\\\\\\\\\\\\\\\\\\\\\\_________________________________/\\\\\\\\\\\\_____/\\\\\\\\\\\\___________________        \n" +
                     " ___/\\\\\\/////////\\\\\\______________________________\\////\\\\\\____\\////\\\\\\___________________       \n" +
                     "  __\\//\\\\\\______\\///______/\\\\\\________________________\\/\\\\\\_______\\/\\\\\\___________________      \n" +
@@ -90,12 +90,13 @@ public class StellaExtension {
         }
 
         public static void greetings(String username) {
-            System.out.println("\nOi " + username + "!!!");
+            System.out.println("\nOi " + username + "!!! Tudo bem?");
 
         }
 
         public static Option optionsMenu() {
-            System.out.print("\n--- O que você vai fazer? \n" +
+            System.out.print("\n" +
+                    "-----  O que você vai fazer?  -----\n" +
                     "╔═════════════════════════════════╗\n" +
                     "║[1] Adicionar um aparelho        ║\n" +
                     "║[2] Editar um aparelho           ║\n" +
@@ -106,9 +107,8 @@ public class StellaExtension {
                     "║[0] Sair                         ║\n" +
                     "╚═════════════════════════════════╝\n");
             System.out.print("Sua escolha: ");
-            String choiceBuffer = scanner.nextLine().trim().toLowerCase();
-
             do {
+                String choiceBuffer = scanner.nextLine().trim().toLowerCase();
                 if (isInteger(choiceBuffer)) {
                     int choice = Integer.parseInt(choiceBuffer);
                     if (Option.indexValues().contains(Integer.parseInt(choiceBuffer))) {
@@ -117,7 +117,6 @@ public class StellaExtension {
                 }
                 System.out.print("\nDesculpa, mas acho que você não colocou uma das opções acima, tenta de novo? \n" +
                         "Sua escolha: ");
-                choiceBuffer = scanner.nextLine().trim().toLowerCase();
 
             } while (true);
         }
