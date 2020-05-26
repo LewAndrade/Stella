@@ -14,7 +14,6 @@ public class User {
     private Map<String, Double> redFlag2;
 
     public User() {
-        devices = new ArrayList<>();
     }
 
     public void setDefaultTariffs() {
@@ -38,10 +37,6 @@ public class User {
         redFlag2.put("low", 13.4);
         redFlag2.put("mid", 27.57);
         redFlag2.put("high", 48.14);
-    }
-
-    public void deleteDevices() {
-        devices = new ArrayList<>();
     }
 
     public String getName() {
@@ -94,6 +89,10 @@ public class User {
 
     public ArrayList<Device> getDevices() {
         return devices;
+    }
+
+    public void setDevices() {
+        this.devices = new ArrayList<>();
     }
 
     public void addDevice(Device device) {
