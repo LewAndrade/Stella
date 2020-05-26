@@ -1,6 +1,8 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -9,7 +11,7 @@ import java.util.Scanner;
 
 class UserExtension {
 
-    private static final File userData = new File(System.getProperty("user.home") + "\\Stella\\User.json");
+    private static final File userData = new File(System.getProperty("user.home") + "\\.stella\\User.json");
     private static final Scanner scanner = new Scanner(System.in);
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -17,7 +19,7 @@ class UserExtension {
         User user = new User();
         System.out.println("Oi, eu sou a Stella, estou aqui para te ajudar a gastar menos energia, \n" +
                 "assim poupando seu bolso e ajudando a salvar o planeta :)");
-        setUserTariffs(user);
+        initializeUser(user);
         setUserName(user);
         setUserAge(user);
         saveUserData(user);
@@ -98,7 +100,6 @@ class UserExtension {
                     ? userData.createNewFile()
                     : userData.getParentFile().mkdirs() && userData.createNewFile();
         } catch (IOException e) {
-            e.printStackTrace();
             StellaExtension.Ui.Error.unableToCreateUserFile();
             return false;
         }
@@ -124,7 +125,7 @@ class UserExtension {
             return;
         }
 
-        double monthlyUsage = Math.ceil(user.getDevices().stream().mapToDouble(Device::getEnergyConsumption).sum() * 30);
+        double monthlyUsage = Math.floor(user.getDevices().stream().mapToDouble(Device::getEnergyConsumption).sum() * 30);
         double yearlyBill = (getMonthlyCompleteBill(user, monthlyUsage, user.getGreenFlag()) * 4) +
                 (getMonthlyCompleteBill(user, monthlyUsage, user.getYellowFlag()) * 3) +
                 (getMonthlyCompleteBill(user, monthlyUsage, user.getRedFlag1()) * 3) +
@@ -150,13 +151,14 @@ class UserExtension {
             StellaExtension.Ui.Error.emptyOrZeroedList();
             return;
         }
+
         ArrayList<Device> deviceList = user.getDevices();
         deviceList.sort(Comparator.comparing(Device::getEnergyConsumption).reversed());
 
-        Device firstDevice = deviceList.get(0);
-
         System.out.println("\nCerto, é o seguinte então...\n" +
                 "Esses são os aparelhos que usam mais energia na sua casa:\n");
+
+        Device firstDevice = deviceList.get(0);
         String deviceString = String.format("1°: %s, que gasta %s kWh por dia, ou seja, custa pra você R$ %s por mês!\n",
                 firstDevice.getName(),
                 StellaExtension.Ui.getDoubleString(firstDevice.getEnergyConsumption()),
@@ -228,15 +230,16 @@ class UserExtension {
         }
     }
 
-    private static void setUserTariffs(User user) {
+    private static void initializeUser(User user) {
         user.setDefaultTariffs();
+        user.setDevices();
         saveUserData(user);
     }
 
     private static void deleteUserDevices(User user) {
         if (StellaExtension.Ui.getConsent()) {
             System.out.print("\nOkay :) \nProntinho...");
-            user.deleteDevices();
+            user.setDevices();
             saveUserData(user);
         }
     }
@@ -313,7 +316,7 @@ class UserExtension {
         }
 
         if (monthlyUsage > 90) {
-            double midCost = getEnergyCost(user, 109, flag, "mid");
+            double midCost = getEnergyCost(user, monthlyUsage > 200 ? 109 : monthlyUsage - 90, flag, "mid");
             monthlyBill += midCost;
             icms += applyTaxes(midCost, 12);
         }
