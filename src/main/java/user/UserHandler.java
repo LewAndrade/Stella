@@ -1,4 +1,9 @@
+package main.java.user;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import main.java.device.Device;
+import main.java.resource.Ui;
+import main.java.stella.StellaHandler;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,15 +14,15 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Scanner;
 
-class UserExtension {
+public class UserHandler {
 
-    private static final File userData = new File(System.getProperty("user.home") + "\\.stella\\User.json");
+    private static final File userData = new File(System.getProperty("user.home") + "\\.stella\\main.java.user.User.json");
     private static final Scanner scanner = new Scanner(System.in);
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static User createUserData() {
         User user = new User();
-        System.out.println("Oi, eu sou a Stella, estou aqui para te ajudar a gastar menos energia, \n" +
+        System.out.println("Oi, eu sou a main.java.stella.Stella, estou aqui para te ajudar a gastar menos energia, \n" +
                 "assim poupando seu bolso e ajudando a salvar o planeta :)");
         initializeUser(user);
         setUserName(user);
@@ -44,7 +49,7 @@ class UserExtension {
                     "╠══════════════════════════════════════════════╣\n" +
                     "║[0] Voltar...                                 ║\n" +
                     "╚══════════════════════════════════════════════╝\n");
-            int index = StellaExtension.Ui.selectOption(8);
+            int index = Ui.In.selectOption(8);
             switch (index) {
                 case 1:
                     setUserName(user);
@@ -81,7 +86,7 @@ class UserExtension {
         try {
             mapper.writeValue(userData, user);
         } catch (Exception e) {
-            StellaExtension.Ui.Error.unableToCreateUserFile();
+            Ui.Error.unableToCreateUserFile();
         }
     }
 
@@ -89,7 +94,7 @@ class UserExtension {
         try {
             return mapper.readValue(userData, User.class);
         } catch (IOException e) {
-            StellaExtension.Ui.Error.unableToReadUserFile();
+            Ui.Error.unableToReadUserFile();
             return null;
         }
     }
@@ -100,7 +105,7 @@ class UserExtension {
                     ? userData.createNewFile()
                     : userData.getParentFile().mkdirs() && userData.createNewFile();
         } catch (IOException e) {
-            StellaExtension.Ui.Error.unableToCreateUserFile();
+            Ui.Error.unableToCreateUserFile();
             return false;
         }
     }
@@ -121,7 +126,7 @@ class UserExtension {
 
     public static void getEnergyConsumption(User user) {
         if (user.getDevices().isEmpty() || (user.getDevices().stream().mapToDouble(Device::getEnergyConsumption).sum() == 0)) {
-            StellaExtension.Ui.Error.emptyOrZeroedList();
+            Ui.Error.emptyOrZeroedList();
             return;
         }
 
@@ -140,15 +145,15 @@ class UserExtension {
                         "\n" +
                         "E me baseando no comportamento das bandeiras nos ultimos anos...\n" +
                         "Posso dizer que em um ano inteiro você gastaria R$ %s!!!",
-                StellaExtension.Ui.getDoubleString(monthlyUsage),
-                StellaExtension.Ui.getDoubleString(monthlyBill),
-                StellaExtension.Ui.getDoubleString(yearlyBill)));
+                Ui.getDoubleString(monthlyUsage),
+                Ui.getDoubleString(monthlyBill),
+                Ui.getDoubleString(yearlyBill)));
 
     }
 
     public static void getConsumptionGuide(User user) {
         if (user.getDevices().isEmpty() || (user.getDevices().stream().mapToDouble(Device::getEnergyConsumption).sum() == 0)) {
-            StellaExtension.Ui.Error.emptyOrZeroedList();
+            Ui.Error.emptyOrZeroedList();
             return;
         }
 
@@ -161,23 +166,23 @@ class UserExtension {
         Device firstDevice = deviceList.get(0);
         String deviceString = String.format("1°: %s, que gasta %s kWh por dia, ou seja, custa pra você R$ %s por mês!\n",
                 firstDevice.getName(),
-                StellaExtension.Ui.getDoubleString(firstDevice.getEnergyConsumption()),
-                StellaExtension.Ui.getDoubleString(getMonthlyBill(user, (firstDevice.getEnergyConsumption() * 30), user.getGreenFlag())));
+                Ui.getDoubleString(firstDevice.getEnergyConsumption()),
+                Ui.getDoubleString(getMonthlyBill(user, (firstDevice.getEnergyConsumption() * 30), user.getGreenFlag())));
 
         if (deviceList.size() > 1) {
             Device secondDevice = deviceList.get(1);
             deviceString += String.format("2°: %s, que gasta %s kWh por dia, ou seja, custa pra você R$ %s por mês!\n",
                     secondDevice.getName(),
-                    StellaExtension.Ui.getDoubleString(secondDevice.getEnergyConsumption()),
-                    StellaExtension.Ui.getDoubleString(getMonthlyBill(user, (secondDevice.getEnergyConsumption() * 30), user.getGreenFlag())));
+                    Ui.getDoubleString(secondDevice.getEnergyConsumption()),
+                    Ui.getDoubleString(getMonthlyBill(user, (secondDevice.getEnergyConsumption() * 30), user.getGreenFlag())));
         }
 
         if (deviceList.size() > 2) {
             Device thirdDevice = deviceList.get(2);
             deviceString += String.format("3°: %s, que gasta %s kWh por dia, ou seja, custa pra você R$ %s por mês!\n",
                     thirdDevice.getName(),
-                    StellaExtension.Ui.getDoubleString(thirdDevice.getEnergyConsumption()),
-                    StellaExtension.Ui.getDoubleString(getMonthlyBill(user, (thirdDevice.getEnergyConsumption() * 30), user.getGreenFlag())));
+                    Ui.getDoubleString(thirdDevice.getEnergyConsumption()),
+                    Ui.getDoubleString(getMonthlyBill(user, (thirdDevice.getEnergyConsumption() * 30), user.getGreenFlag())));
         }
 
         System.out.println(deviceString);
@@ -198,12 +203,12 @@ class UserExtension {
                 "\nQual vai ser o nome novo? : ");
         do {
             String name = scanner.nextLine().trim();
-            if (StellaExtension.isValidNameFormat(name)) {
+            if (StellaHandler.isValidNameFormat(name)) {
                 user.setName(name);
                 saveUserData(user);
                 return;
             }
-            StellaExtension.Ui.Error.invalidNameFormatError();
+            Ui.Error.invalidNameFormatError();
         } while (true);
     }
 
@@ -213,17 +218,17 @@ class UserExtension {
                 : "\nQual vai ser a idade nova? : ");
         do {
             String age = scanner.nextLine().trim();
-            if (StellaExtension.isValidAgeFormat(age)) {
+            if (StellaHandler.isValidAgeFormat(age)) {
                 user.setAge(Integer.parseInt(age));
                 saveUserData(user);
                 return;
             }
-            StellaExtension.Ui.Error.invalidAgeFormatError();
+            Ui.Error.invalidAgeFormatError();
         } while (true);
     }
 
     private static void resetUserTariffs(User user) {
-        if (StellaExtension.Ui.getConsent()) {
+        if (Ui.In.getConsent()) {
             System.out.println("\nOkay :)");
             user.setDefaultTariffs();
             saveUserData(user);
@@ -237,7 +242,7 @@ class UserExtension {
     }
 
     private static void deleteUserDevices(User user) {
-        if (StellaExtension.Ui.getConsent()) {
+        if (Ui.In.getConsent()) {
             System.out.print("\nOkay :) \nProntinho...");
             user.setDevices();
             saveUserData(user);
@@ -248,13 +253,13 @@ class UserExtension {
         System.out.print("\nQual vai ser o novo valor da tarifa? : ");
         do {
             String tariff = scanner.nextLine();
-            if (StellaExtension.isPositiveDouble(tariff)) {
+            if (StellaHandler.isPositiveDouble(tariff)) {
                 user.setTariff(Double.parseDouble(tariff));
                 saveUserData(user);
 
                 return;
             }
-            StellaExtension.Ui.Error.invalidNumberFormatError();
+            Ui.Error.invalidNumberFormatError();
         } while (true);
     }
 
@@ -262,12 +267,12 @@ class UserExtension {
         System.out.print("\nQual vai ser o novo valor da tarifa? : ");
         do {
             String tariff = scanner.nextLine();
-            if (StellaExtension.isPositiveDouble(tariff)) {
+            if (StellaHandler.isPositiveDouble(tariff)) {
                 user.setPisCofins(Double.parseDouble(tariff));
                 saveUserData(user);
                 return;
             }
-            StellaExtension.Ui.Error.invalidNumberFormatError();
+            Ui.Error.invalidNumberFormatError();
         } while (true);
     }
 
@@ -275,13 +280,13 @@ class UserExtension {
         System.out.print("\nQual vai ser o novo valor da tarifa? : ");
         do {
             String tariff = scanner.nextLine();
-            if (StellaExtension.isPositiveDouble(tariff)) {
+            if (StellaHandler.isPositiveDouble(tariff)) {
                 user.setEce(Double.parseDouble(tariff));
                 saveUserData(user);
 
                 return;
             }
-            StellaExtension.Ui.Error.invalidNumberFormatError();
+            Ui.Error.invalidNumberFormatError();
         } while (true);
     }
 
@@ -289,17 +294,16 @@ class UserExtension {
         System.out.print("\nQual vai ser o novo valor da tarifa? : ");
         do {
             String tariff = scanner.nextLine();
-            if (StellaExtension.isPositiveDouble(tariff)) {
+            if (StellaHandler.isPositiveDouble(tariff)) {
                 user.setCosip(Double.parseDouble(tariff));
                 saveUserData(user);
                 return;
             }
-            StellaExtension.Ui.Error.invalidNumberFormatError();
+            Ui.Error.invalidNumberFormatError();
         } while (true);
     }
 
     private static double getMonthlyCompleteBill(User user, double monthlyUsage, Map<String, Double> flag) {
-        getMonthlyBill(user, monthlyUsage, flag);
         double monthlyBill = getMonthlyBill(user, monthlyUsage, flag);
         monthlyBill += user.getCosip();
         return monthlyBill;
@@ -323,8 +327,8 @@ class UserExtension {
 
         monthlyBill += getEnergyCost(user, monthlyUsage > 90 ? 90 : monthlyUsage, flag, "low");
         monthlyBill += icms;
-        monthlyBill += monthlyUsage * user.getEce();
         monthlyBill += applyTaxes(monthlyBill, user.getPisCofins());
+        monthlyBill += monthlyUsage * user.getEce();
         return monthlyBill;
     }
 

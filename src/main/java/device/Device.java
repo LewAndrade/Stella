@@ -1,3 +1,5 @@
+package main.java.device;
+
 public class Device {
     private String name;
     private double power;

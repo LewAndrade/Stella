@@ -1,8 +1,16 @@
+package main.java.device;
+
+import main.java.resource.TimeFormat;
+import main.java.resource.Ui;
+import main.java.stella.StellaHandler;
+import main.java.user.User;
+import main.java.user.UserHandler;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-public class DeviceExtension {
+public class DeviceHandler {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void createNewDevice(User user) {
@@ -10,7 +18,7 @@ public class DeviceExtension {
         Device device = new Device(setDeviceName(), setDevicePower(), setDeviceDailyUsage());
         user.addDevice(device);
         System.out.println("\nProntinho, salvando os dados do aparelho: " + device.getName() + "...");
-        UserExtension.saveUserData(user);
+        UserHandler.saveUserData(user);
     }
 
     public static void editDevice(User user) {
@@ -18,7 +26,7 @@ public class DeviceExtension {
         if (!listDevices(userDevices)) return;
         userDevices = user.getDevices();
         do {
-            int index = StellaExtension.Ui.selectOption(userDevices.size());
+            int index = Ui.In.selectOption(userDevices.size());
             if (index == 0) {
                 return;
             } else {
@@ -29,7 +37,7 @@ public class DeviceExtension {
                         "[3] Tempo de uso\n" +
                         "[0] Voltar", device.getName()));
 
-                int item = StellaExtension.Ui.selectOption(3);
+                int item = Ui.In.selectOption(3);
                 switch (item) {
                     case 1:
                         device.setName(setDeviceName());
@@ -41,11 +49,11 @@ public class DeviceExtension {
                         device.setDailyUsage(setDeviceDailyUsage());
                         break;
                     case 0:
-                        UserExtension.saveUserData(user);
+                        UserHandler.saveUserData(user);
                         break;
                 }
             }
-            UserExtension.saveUserData(user);
+            UserHandler.saveUserData(user);
             listDevices(userDevices);
 
         } while (true);
@@ -54,11 +62,11 @@ public class DeviceExtension {
     public static void deleteDevice(User user) {
         ArrayList<Device> userDevices = user.getDevices();
         if (!listDevices(userDevices)) return;
-        int index = StellaExtension.Ui.selectOption(userDevices.size());
+        int index = Ui.In.selectOption(userDevices.size());
         if (index != 0) {
-            if (StellaExtension.Ui.getConsent()) {
+            if (Ui.In.getConsent()) {
                 user.getDevices().remove(index - 1);
-                UserExtension.saveUserData(user);
+                UserHandler.saveUserData(user);
                 System.out.println("\nAparelho removido...\n");
             }
         }
@@ -70,10 +78,10 @@ public class DeviceExtension {
                 "--- Nome --- : ");
         do {
             String name = scanner.nextLine().trim();
-            if (StellaExtension.isValidNameFormat(name)) {
+            if (StellaHandler.isValidNameFormat(name)) {
                 return name;
             }
-            StellaExtension.Ui.Error.invalidNameFormatError();
+            Ui.Error.invalidNameFormatError();
         } while (true);
     }
 
@@ -84,10 +92,10 @@ public class DeviceExtension {
                 "--- Potência (W) --- : ");
         do {
             String power = scanner.nextLine().trim();
-            if (StellaExtension.isPositiveDouble(power)) {
+            if (StellaHandler.isPositiveDouble(power)) {
                 return Double.parseDouble(power);
             }
-            StellaExtension.Ui.Error.invalidPowerFormatError();
+            Ui.Error.invalidPowerFormatError();
         } while (true);
     }
 
@@ -96,28 +104,28 @@ public class DeviceExtension {
                 "Você quer me dizer em horas ou em minutos? : ");
 
         do {
-            TimeFormat formatChoice = StellaExtension.getTimeFormat(scanner.nextLine().trim().toLowerCase());
+            TimeFormat formatChoice = StellaHandler.getTimeFormat(scanner.nextLine().trim().toLowerCase());
             switch (formatChoice) {
                 case HOUR:
                     System.out.print("Certo, e por quantas horas o aparelho é usado por dia? : ");
                     do {
                         String hours = scanner.nextLine().trim();
-                        if (StellaExtension.isValidHourFormat(hours)) {
+                        if (StellaHandler.isValidHourFormat(hours)) {
                             return Double.parseDouble(hours);
                         }
-                        StellaExtension.Ui.Error.invalidHourFormatError();
+                        Ui.Error.invalidHourFormatError();
                     } while (true);
                 case MINUTE:
                     System.out.print("Certo, e por quantos minutos o aparelho é usado por dia? : ");
                     do {
                         String minutes = scanner.nextLine().trim();
-                        if (StellaExtension.isValidMinuteFormat(minutes)) {
+                        if (StellaHandler.isValidMinuteFormat(minutes)) {
                             return Double.parseDouble(minutes) / 60;
                         }
-                        StellaExtension.Ui.Error.invalidMinuteFormatError();
+                        Ui.Error.invalidMinuteFormatError();
                     } while (true);
                 case NULL:
-                    StellaExtension.Ui.Error.invalidTimeFormatError();
+                    Ui.Error.invalidTimeFormatError();
                     break;
             }
         } while (true);
@@ -125,7 +133,7 @@ public class DeviceExtension {
 
     private static boolean listDevices(ArrayList<Device> devices) {
         if (devices.isEmpty()) {
-            StellaExtension.Ui.Error.emptyDeviceList();
+            Ui.Error.emptyDeviceList();
             return false;
         }
         int biggestName = 0;
@@ -135,7 +143,7 @@ public class DeviceExtension {
 
         for (Device device : devices) {
             int nameLength = device.getName().length();
-            int powerLength = StellaExtension.Ui.getDoubleString(device.getPower()).length();
+            int powerLength = Ui.getDoubleString(device.getPower()).length();
             int consumptionLength = String.valueOf((int) device.getEnergyConsumption()).length() + 3;
             int usageTime = getUsageTime(device).length();
             if (nameLength > biggestName) biggestName = nameLength;
@@ -157,7 +165,7 @@ public class DeviceExtension {
                             "║ Consumo de energia: %" + biggestConsumption + ".2f kWh ║",
                     i + 1,
                     device.getName(),
-                    StellaExtension.Ui.getDoubleString(device.getPower()),
+                    Ui.getDoubleString(device.getPower()),
                     getUsageTime(device),
                     device.getEnergyConsumption()));
         }
@@ -188,6 +196,4 @@ public class DeviceExtension {
         else if (minutes == 1) usageTime += String.format("%s minuto", minutes);
         return usageTime;
     }
-
-
 }

@@ -1,4 +1,10 @@
-import java.util.*;
+package main.java.user;
+
+import main.java.device.Device;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class User {
     private String name;
