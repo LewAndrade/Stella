@@ -41,7 +41,7 @@ public class UserHandler {
                     "╠═════════ Opções avançadas, cuidado! ═════════╣\n" +
                     "║[3] Tarifa Base                               ║\n" +
                     "║[4] Valor da COSIP                            ║\n" +
-                    "║[5] Valor ta taxa ECE                         ║\n" +
+                    "║[5] Valor da taxa ECE                         ║\n" +
                     "║[6] Valor das taxas PIS + COFINS              ║\n" +
                     "║[7] Voltar valores de tarifas ao padrão       ║\n" +
                     "║[8] Deletar todos os dispositivos adicionados ║\n" +
