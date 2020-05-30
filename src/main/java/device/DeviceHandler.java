@@ -2,7 +2,6 @@ package main.java.device;
 
 import main.java.resource.TimeFormat;
 import main.java.resource.Ui;
-import main.java.stella.StellaHandler;
 import main.java.user.User;
 import main.java.user.UserHandler;
 
@@ -78,10 +77,10 @@ public class DeviceHandler {
                 "--- Nome --- : ");
         do {
             String name = scanner.nextLine().trim();
-            if (StellaHandler.isValidNameFormat(name)) {
+            if (Ui.In.isValidNameFormat(name)) {
                 return name;
             }
-            Ui.Error.invalidNameFormatError();
+            Ui.Out.Error.invalidNameFormatError();
         } while (true);
     }
 
@@ -92,10 +91,10 @@ public class DeviceHandler {
                 "--- Potência (W) --- : ");
         do {
             String power = scanner.nextLine().trim();
-            if (StellaHandler.isPositiveDouble(power)) {
+            if (Ui.In.isPositiveDouble(power)) {
                 return Double.parseDouble(power);
             }
-            Ui.Error.invalidPowerFormatError();
+            Ui.Out.Error.invalidPowerFormatError();
         } while (true);
     }
 
@@ -104,28 +103,28 @@ public class DeviceHandler {
                 "Você quer me dizer em horas ou em minutos? : ");
 
         do {
-            TimeFormat formatChoice = StellaHandler.getTimeFormat(scanner.nextLine().trim().toLowerCase());
+            TimeFormat formatChoice = Ui.In.getTimeFormat(scanner.nextLine().trim().toLowerCase());
             switch (formatChoice) {
                 case HOUR:
                     System.out.print("Certo, e por quantas horas o aparelho é usado por dia? : ");
                     do {
                         String hours = scanner.nextLine().trim();
-                        if (StellaHandler.isValidHourFormat(hours)) {
+                        if (Ui.In.isValidHourFormat(hours)) {
                             return Double.parseDouble(hours);
                         }
-                        Ui.Error.invalidHourFormatError();
+                        Ui.Out.Error.invalidHourFormatError();
                     } while (true);
                 case MINUTE:
                     System.out.print("Certo, e por quantos minutos o aparelho é usado por dia? : ");
                     do {
                         String minutes = scanner.nextLine().trim();
-                        if (StellaHandler.isValidMinuteFormat(minutes)) {
+                        if (Ui.In.isValidMinuteFormat(minutes)) {
                             return Double.parseDouble(minutes) / 60;
                         }
-                        Ui.Error.invalidMinuteFormatError();
+                        Ui.Out.Error.invalidMinuteFormatError();
                     } while (true);
                 case NULL:
-                    Ui.Error.invalidTimeFormatError();
+                    Ui.Out.Error.invalidTimeFormatError();
                     break;
             }
         } while (true);
@@ -133,7 +132,7 @@ public class DeviceHandler {
 
     private static boolean listDevices(ArrayList<Device> devices) {
         if (devices.isEmpty()) {
-            Ui.Error.emptyDeviceList();
+            Ui.Out.Error.emptyDeviceList();
             return false;
         }
         int biggestName = 0;
@@ -143,7 +142,7 @@ public class DeviceHandler {
 
         for (Device device : devices) {
             int nameLength = device.getName().length();
-            int powerLength = Ui.getDoubleString(device.getPower()).length();
+            int powerLength = Ui.Out.getDoubleString(device.getPower()).length();
             int consumptionLength = String.valueOf((int) device.getEnergyConsumption()).length() + 3;
             int usageTime = getUsageTime(device).length();
             if (nameLength > biggestName) biggestName = nameLength;
@@ -165,7 +164,7 @@ public class DeviceHandler {
                             "║ Consumo de energia: %" + biggestConsumption + ".2f kWh ║",
                     i + 1,
                     device.getName(),
-                    Ui.getDoubleString(device.getPower()),
+                    Ui.Out.getDoubleString(device.getPower()),
                     getUsageTime(device),
                     device.getEnergyConsumption()));
         }

@@ -1,7 +1,5 @@
 package main.java.resource;
 
-import main.java.stella.StellaHandler;
-
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -9,14 +7,10 @@ import java.util.Scanner;
 
 public class Ui {
 
-    public static String getDoubleString(double value) {
-        return new DecimalFormat("#.##").format(value);
-    }
-
     public static class In {
+        private static final Scanner scanner = new Scanner(System.in);
         private static final List<String> continueList = Arrays.asList("sim", "si", "s", "yes", "ye", "y", "zim", "yup", "ja",
                 "uhum", "ss", "yip", "yabadabadoo", "okiedokie", "yeet", "okay", "okie", "ok");
-        private static final Scanner scanner = new Scanner(System.in);
 
         public static boolean getConsent() {
             System.out.print("\nDeseja mesmo fazer isso?\n" +
@@ -28,12 +22,12 @@ public class Ui {
             System.out.print("Sua escolha: ");
             String choiceBuffer = scanner.nextLine().trim();
             do {
-                if (StellaHandler.isInteger(choiceBuffer)) {
+                if (isInteger(choiceBuffer)) {
                     int choice = Integer.parseInt(choiceBuffer);
                     if (choice >= 0 && choice <= numberOfOptions)
                         return choice;
                 }
-                Error.invalidNumberFormatError();
+                Out.Error.invalidNumberFormatError();
                 choiceBuffer = scanner.nextLine().trim();
             } while (true);
         }
@@ -53,7 +47,7 @@ public class Ui {
             System.out.print("Sua escolha: ");
             do {
                 String choiceBuffer = scanner.nextLine().trim().toLowerCase();
-                if (StellaHandler.isInteger(choiceBuffer)) {
+                if (isInteger(choiceBuffer)) {
                     int choice = Integer.parseInt(choiceBuffer);
                     if (Option.indexValues().contains(Integer.parseInt(choiceBuffer))) {
                         return Option.fromInt(choice);
@@ -63,6 +57,70 @@ public class Ui {
                         "Sua escolha: ");
 
             } while (true);
+        }
+
+        public static boolean isInteger(String string) {
+            Scanner sc = new Scanner(string.trim());
+            if (!sc.hasNextInt(10)) return false;
+            sc.nextInt(10);
+            return !sc.hasNext();
+        }
+
+        public static boolean isNumeric(String string) {
+            try {
+                Double.parseDouble(string);
+                return true;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+
+        public static boolean isValidNameFormat(String string) {
+            return string.length() <= 32 && !string.isEmpty();
+        }
+
+        public static boolean isPositiveDouble(String string) {
+            if (isNumeric(string)) {
+                double value = Double.parseDouble(string);
+                return value > 0;
+            }
+            return false;
+        }
+
+        public static boolean isValidHourFormat(String string) {
+            if (isNumeric(string)) {
+                double value = Double.parseDouble(string);
+                return !(value > 24) && !(value < 0);
+            }
+            return false;
+        }
+
+        public static boolean isValidAgeFormat(String string) {
+            if (isNumeric(string)) {
+                if (isInteger(string)) {
+                    double value = Double.parseDouble(string);
+                    return value > 0 && value < 120;
+                } else {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        public static boolean isValidMinuteFormat(String string) {
+            if (isNumeric(string)) {
+                double value = Double.parseDouble(string);
+                return !(value > 1440) && !(value < 0);
+            }
+            return false;
+        }
+
+        public static TimeFormat getTimeFormat(String string) {
+            List<String> hourFormats = Arrays.asList("horas", "hora", "h", "hr", "hrs", "em horas", "em hora");
+            List<String> minuteFormats = Arrays.asList("minutos", "minuto", "min", "m", "em minutos", "em minuto");
+            if (hourFormats.contains(string)) return TimeFormat.HOUR;
+            else if (minuteFormats.contains(string)) return TimeFormat.MINUTE;
+            else return TimeFormat.NULL;
         }
     }
 
@@ -93,64 +151,68 @@ public class Ui {
                     "Saindo.....\n" +
                     "Até mais :)");
         }
-    }
 
-    public static class Error {
-        public static void invalidHourFormatError() {
-            System.out.print("\nDesculpa, mas parece que você não escreveu um número válido, tenta de novo vai... \n" +
-                    "Lembra que só tem 24 horas em um dia, não pode passar disso, e nem ser menor que 0 ok? \n" +
-                    "--- Horas em uso (h) --- : ");
+        public static String getDoubleString(double value) {
+            return new DecimalFormat("#.##").format(value);
         }
 
-        public static void invalidMinuteFormatError() {
-            System.out.print("\nDesculpa, mas parece que você não escreveu um número válido, tenta de novo vai... \n" +
-                    "Lembra que só tem 1440 minutos em um dia, não pode passar disso, e nem ser menor que 0 ok? \n" +
-                    "--- Minutos em uso (h) --- : ");
-        }
+        public static class Error {
+            public static void invalidHourFormatError() {
+                System.out.print("\nDesculpa, mas parece que você não escreveu um número válido, tenta de novo vai... \n" +
+                        "Lembra que só tem 24 horas em um dia, não pode passar disso, e nem ser menor que 0 ok? \n" +
+                        "--- Horas em uso (h) --- : ");
+            }
 
-        public static void invalidNumberFormatError() {
-            System.out.print("\nPuts, parece que você não escreveu um número válido, tenta de novo vai...\n" +
-                    "Sua escolha: ");
-        }
+            public static void invalidMinuteFormatError() {
+                System.out.print("\nDesculpa, mas parece que você não escreveu um número válido, tenta de novo vai... \n" +
+                        "Lembra que só tem 1440 minutos em um dia, não pode passar disso, e nem ser menor que 0 ok? \n" +
+                        "--- Minutos em uso (h) --- : ");
+            }
 
-        public static void invalidNameFormatError() {
-            System.out.print("\nOpa, eu acho que você não colocou um nome válido. \n" +
-                    "Tenta de novo por favor? \n" +
-                    "--- Nome --- : ");
-        }
+            public static void invalidNumberFormatError() {
+                System.out.print("\nPuts, parece que você não escreveu um número válido, tenta de novo vai...\n" +
+                        "Sua escolha: ");
+            }
 
-        public static void invalidPowerFormatError() {
-            System.out.print("\nDesculpa, mas você não escreveu um numero válido pra potencia... \n" +
-                    "--- Potência (W) --- : ");
-        }
+            public static void invalidNameFormatError() {
+                System.out.print("\nOpa, eu acho que você não colocou um nome válido. \n" +
+                        "Tenta de novo por favor? \n" +
+                        "--- Nome --- : ");
+            }
 
-        public static void invalidTimeFormatError() {
-            System.out.print("\nPera não entendi, você quis dizer horas ou minutos? : ");
-        }
+            public static void invalidPowerFormatError() {
+                System.out.print("\nDesculpa, mas você não escreveu um numero válido pra potencia... \n" +
+                        "--- Potência (W) --- : ");
+            }
 
-        public static void invalidAgeFormatError() {
-            System.out.print("\nEi, esa não é uma idade valida: ");
+            public static void invalidTimeFormatError() {
+                System.out.print("\nPera não entendi, você quis dizer horas ou minutos? : ");
+            }
 
-        }
+            public static void invalidAgeFormatError() {
+                System.out.print("\nEi, esa não é uma idade valida: ");
 
-        public static void emptyDeviceList() {
-            System.out.println("\nPoxa, você não tem nenhum aparelho cadastrado,\n" +
-                    "volta aqui depois que você tiver adicionado pelo menos um.");
-        }
+            }
 
-        public static void emptyOrZeroedList() {
-            System.out.println("\nEi me diz, você não tem nenhum aparelho ou seus aparelhos não gastam nada?\n" +
-                    "Volta aqui depois que você tiver adicionado pelo menos um..");
-        }
+            public static void emptyDeviceList() {
+                System.out.println("\nPoxa, você não tem nenhum aparelho cadastrado,\n" +
+                        "volta aqui depois que você tiver adicionado pelo menos um.");
+            }
 
-        public static void unableToCreateUserFile() {
-            System.out.println("\nAIAIAI,aconteceu um ERRO :( Eu não consegui salvar os dados de usuario, \n" +
-                    "se isso acontecer de novo, tenta me reiniciar como administrador.");
-        }
+            public static void emptyOrZeroedList() {
+                System.out.println("\nEi me diz, você não tem nenhum aparelho ou seus aparelhos não gastam nada?\n" +
+                        "Volta aqui depois que você tiver adicionado pelo menos um..");
+            }
 
-        public static void unableToReadUserFile() {
-            System.out.println("\nAIAIAI, aconteceu um ERRO :( Eu não consegui ler os dados de usuario, \n" +
-                    "se isso acontecer de novo, tenta me reiniciar como administrador.");
+            public static void unableToCreateUserFile() {
+                System.out.println("\nAIAIAI,aconteceu um ERRO :( Eu não consegui salvar os dados de usuario, \n" +
+                        "se isso acontecer de novo, tenta me reiniciar como administrador.");
+            }
+
+            public static void unableToReadUserFile() {
+                System.out.println("\nAIAIAI, aconteceu um ERRO :( Eu não consegui ler os dados de usuario, \n" +
+                        "se isso acontecer de novo, tenta me reiniciar como administrador.");
+            }
         }
     }
 }

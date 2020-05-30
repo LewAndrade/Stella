@@ -3,7 +3,6 @@ package main.java.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import main.java.device.Device;
 import main.java.resource.Ui;
-import main.java.stella.StellaHandler;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +15,7 @@ import java.util.Scanner;
 
 public class UserHandler {
 
-    private static final File userData = new File(System.getProperty("user.home") + "\\.stella\\main.java.user.User.json");
+    private static final File userData = new File(System.getProperty("user.home") + "\\.stella\\user.json");
     private static final Scanner scanner = new Scanner(System.in);
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -86,7 +85,7 @@ public class UserHandler {
         try {
             mapper.writeValue(userData, user);
         } catch (Exception e) {
-            Ui.Error.unableToCreateUserFile();
+            Ui.Out.Error.unableToCreateUserFile();
         }
     }
 
@@ -94,7 +93,7 @@ public class UserHandler {
         try {
             return mapper.readValue(userData, User.class);
         } catch (IOException e) {
-            Ui.Error.unableToReadUserFile();
+            Ui.Out.Error.unableToReadUserFile();
             return null;
         }
     }
@@ -105,7 +104,7 @@ public class UserHandler {
                     ? userData.createNewFile()
                     : userData.getParentFile().mkdirs() && userData.createNewFile();
         } catch (IOException e) {
-            Ui.Error.unableToCreateUserFile();
+            Ui.Out.Error.unableToCreateUserFile();
             return false;
         }
     }
@@ -126,7 +125,7 @@ public class UserHandler {
 
     public static void getEnergyConsumption(User user) {
         if (user.getDevices().isEmpty() || (user.getDevices().stream().mapToDouble(Device::getEnergyConsumption).sum() == 0)) {
-            Ui.Error.emptyOrZeroedList();
+            Ui.Out.Error.emptyOrZeroedList();
             return;
         }
 
@@ -145,15 +144,15 @@ public class UserHandler {
                         "\n" +
                         "E me baseando no comportamento das bandeiras nos ultimos anos...\n" +
                         "Posso dizer que em um ano inteiro você gastaria R$ %s!!!",
-                Ui.getDoubleString(monthlyUsage),
-                Ui.getDoubleString(monthlyBill),
-                Ui.getDoubleString(yearlyBill)));
+                Ui.Out.getDoubleString(monthlyUsage),
+                Ui.Out.getDoubleString(monthlyBill),
+                Ui.Out.getDoubleString(yearlyBill)));
 
     }
 
     public static void getConsumptionGuide(User user) {
         if (user.getDevices().isEmpty() || (user.getDevices().stream().mapToDouble(Device::getEnergyConsumption).sum() == 0)) {
-            Ui.Error.emptyOrZeroedList();
+            Ui.Out.Error.emptyOrZeroedList();
             return;
         }
 
@@ -166,23 +165,23 @@ public class UserHandler {
         Device firstDevice = deviceList.get(0);
         String deviceString = String.format("1°: %s, que gasta %s kWh por dia, ou seja, custa pra você R$ %s por mês!\n",
                 firstDevice.getName(),
-                Ui.getDoubleString(firstDevice.getEnergyConsumption()),
-                Ui.getDoubleString(getMonthlyBill(user, (firstDevice.getEnergyConsumption() * 30), user.getGreenFlag())));
+                Ui.Out.getDoubleString(firstDevice.getEnergyConsumption()),
+                Ui.Out.getDoubleString(getMonthlyBill(user, (firstDevice.getEnergyConsumption() * 30), user.getGreenFlag())));
 
         if (deviceList.size() > 1) {
             Device secondDevice = deviceList.get(1);
             deviceString += String.format("2°: %s, que gasta %s kWh por dia, ou seja, custa pra você R$ %s por mês!\n",
                     secondDevice.getName(),
-                    Ui.getDoubleString(secondDevice.getEnergyConsumption()),
-                    Ui.getDoubleString(getMonthlyBill(user, (secondDevice.getEnergyConsumption() * 30), user.getGreenFlag())));
+                    Ui.Out.getDoubleString(secondDevice.getEnergyConsumption()),
+                    Ui.Out.getDoubleString(getMonthlyBill(user, (secondDevice.getEnergyConsumption() * 30), user.getGreenFlag())));
         }
 
         if (deviceList.size() > 2) {
             Device thirdDevice = deviceList.get(2);
             deviceString += String.format("3°: %s, que gasta %s kWh por dia, ou seja, custa pra você R$ %s por mês!\n",
                     thirdDevice.getName(),
-                    Ui.getDoubleString(thirdDevice.getEnergyConsumption()),
-                    Ui.getDoubleString(getMonthlyBill(user, (thirdDevice.getEnergyConsumption() * 30), user.getGreenFlag())));
+                    Ui.Out.getDoubleString(thirdDevice.getEnergyConsumption()),
+                    Ui.Out.getDoubleString(getMonthlyBill(user, (thirdDevice.getEnergyConsumption() * 30), user.getGreenFlag())));
         }
 
         System.out.println(deviceString);
@@ -203,12 +202,12 @@ public class UserHandler {
                 "\nQual vai ser o nome novo? : ");
         do {
             String name = scanner.nextLine().trim();
-            if (StellaHandler.isValidNameFormat(name)) {
+            if (Ui.In.isValidNameFormat(name)) {
                 user.setName(name);
                 saveUserData(user);
                 return;
             }
-            Ui.Error.invalidNameFormatError();
+            Ui.Out.Error.invalidNameFormatError();
         } while (true);
     }
 
@@ -218,12 +217,12 @@ public class UserHandler {
                 : "\nQual vai ser a idade nova? : ");
         do {
             String age = scanner.nextLine().trim();
-            if (StellaHandler.isValidAgeFormat(age)) {
+            if (Ui.In.isValidAgeFormat(age)) {
                 user.setAge(Integer.parseInt(age));
                 saveUserData(user);
                 return;
             }
-            Ui.Error.invalidAgeFormatError();
+            Ui.Out.Error.invalidAgeFormatError();
         } while (true);
     }
 
@@ -253,13 +252,13 @@ public class UserHandler {
         System.out.print("\nQual vai ser o novo valor da tarifa? : ");
         do {
             String tariff = scanner.nextLine();
-            if (StellaHandler.isPositiveDouble(tariff)) {
+            if (Ui.In.isPositiveDouble(tariff)) {
                 user.setTariff(Double.parseDouble(tariff));
                 saveUserData(user);
 
                 return;
             }
-            Ui.Error.invalidNumberFormatError();
+            Ui.Out.Error.invalidNumberFormatError();
         } while (true);
     }
 
@@ -267,12 +266,12 @@ public class UserHandler {
         System.out.print("\nQual vai ser o novo valor da tarifa? : ");
         do {
             String tariff = scanner.nextLine();
-            if (StellaHandler.isPositiveDouble(tariff)) {
+            if (Ui.In.isPositiveDouble(tariff)) {
                 user.setPisCofins(Double.parseDouble(tariff));
                 saveUserData(user);
                 return;
             }
-            Ui.Error.invalidNumberFormatError();
+            Ui.Out.Error.invalidNumberFormatError();
         } while (true);
     }
 
@@ -280,13 +279,13 @@ public class UserHandler {
         System.out.print("\nQual vai ser o novo valor da tarifa? : ");
         do {
             String tariff = scanner.nextLine();
-            if (StellaHandler.isPositiveDouble(tariff)) {
+            if (Ui.In.isPositiveDouble(tariff)) {
                 user.setEce(Double.parseDouble(tariff));
                 saveUserData(user);
 
                 return;
             }
-            Ui.Error.invalidNumberFormatError();
+            Ui.Out.Error.invalidNumberFormatError();
         } while (true);
     }
 
@@ -294,12 +293,12 @@ public class UserHandler {
         System.out.print("\nQual vai ser o novo valor da tarifa? : ");
         do {
             String tariff = scanner.nextLine();
-            if (StellaHandler.isPositiveDouble(tariff)) {
+            if (Ui.In.isPositiveDouble(tariff)) {
                 user.setCosip(Double.parseDouble(tariff));
                 saveUserData(user);
                 return;
             }
-            Ui.Error.invalidNumberFormatError();
+            Ui.Out.Error.invalidNumberFormatError();
         } while (true);
     }
 

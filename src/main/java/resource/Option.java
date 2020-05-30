@@ -15,8 +15,6 @@ public enum Option {
     EDIT_PROFILE(6),
     EXIT(0);
 
-    private static final Map<Integer, Option> reverseLookup =
-            Arrays.stream(Option.values()).collect(Collectors.toMap(Option::getIndex, Function.identity()));
     final int index;
 
     Option(int index) {
@@ -31,7 +29,10 @@ public enum Option {
         return reverseLookup.getOrDefault(id, null);
     }
 
-    public int getIndex() {
+    private int getIndex() {
         return this.index;
     }
+
+    private static final Map<Integer, Option> reverseLookup =
+            Arrays.stream(Option.values()).collect(Collectors.toMap(Option::getIndex, Function.identity()));
 }
