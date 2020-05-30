@@ -1,3 +1,3 @@
-# main.java.stella.Stella
+# Stella
 ---
 A project to help people manage their home's power consumption.

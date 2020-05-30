@@ -21,7 +21,7 @@ public class UserHandler {
 
     public static User createUserData() {
         User user = new User();
-        System.out.println("Oi, eu sou a main.java.stella.Stella, estou aqui para te ajudar a gastar menos energia, \n" +
+        System.out.println("Oi, eu sou a Stella, estou aqui para te ajudar a gastar menos energia, \n" +
                 "assim poupando seu bolso e ajudando a salvar o planeta :)");
         initializeUser(user);
         setUserName(user);
